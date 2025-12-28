@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Widget Test</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Galmuri9&display=swap');
+
+        /* [테스트용] 배경을 잘 보이게 분홍색으로 설정 */
+        body {
+            background-color: #ffebf0; 
+            font-family: 'Galmuri9', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .window {
+            background-color: #c0c0c0;
+            width: 320px;
+            padding: 4px;
+            border-radius: 12px;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title-bar {
+            background: linear-gradient(90deg, #000080, #1084d0);
+            padding: 4px 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px 8px 2px 2px;
+            margin-bottom: 6px;
+        }
+
+        .content-area {
+            background: white;
+            height: 220px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px inset #dfdfdf;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            align-content: start;
+            overflow-y: auto;
+        }
+
+        .shop-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px;
+            border: 1px solid transparent;
+        }
+        .shop-item:hover { border: 1px dotted #888; }
+        .shop-item.selected { background-color: #000080; color: white; border-radius: 4px; }
+        .shop-item.selected .item-price { color: yellow; }
+
+        .item-box { width: 40px; height: 40px; background: #eee; margin-bottom: 4px; border: 2px inset white; }
+        .item-name { font-size: 11px; text-align: center; }
+        .item-price { font-size: 10px; color: #666; font-weight: bold; }
+        
+        .status-bar { margin-top: 6px; padding: 4px; background: #dfdfdf; font-size: 11px; display: flex; justify-content: space-between; font-weight: bold;}
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">
+            <span>TEST_MODE.EXE</span>
+            <span>X</span>
+        </div>
+        
+        <div class="content-area" id="list">
+            Loading...
+        </div>
+
+        <div class="status-bar">
+            <span>TOTAL:</span>
+            <span id="total">0</span>
+        </div>
+    </div>
+
+    <script>
+        // 1. 테스트용 가짜 데이터 (API 없이 작동)
+        const mockData = [
+            { name: "빨간 물약", price: 500 },
+            { name: "파란 물약", price: 800 },
+            { name: "전설의 검", price: 15000 },
+            { name: "나무 방패", price: 3000 },
+        ];
+
+        const list = document.getElementById('list');
+        const totalEl = document.getElementById('total');
+        let total = 0;
+
+        // 2. 화면 그리기
+        list.innerHTML = '';
+        mockData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'shop-item';
+            div.innerHTML = `
+                <div class="item-box"></div>
+                <span class="item-name">${item.name}</span>
+                <span class="item-price">${item.price}</span>
+            `;
+            
+            div.addEventListener('click', () => {
+                div.classList.toggle('selected');
+                if(div.classList.contains('selected')) total += item.price;
+                else total -= item.price;
+                totalEl.innerText = total;
+            });
+
+            list.appendChild(div);
+        });
+    </script>
+</body>
+</html>
